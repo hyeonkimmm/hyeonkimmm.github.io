@@ -1,9 +1,8 @@
 ---
 title : "My First Post"
 category :
-    - hello
+    - blog
 tag :
-    - hello
     - blog
 toc : true
 ---
