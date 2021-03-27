@@ -54,7 +54,7 @@ reCaptcha:
 atom_feed:
   path                   : # blank (default) uses feed.xml
   hide                   : # true, false (default)
-search                   : # true, false (default)
+search                   : true #, false (default)
 search_full_content      : # true, false (default)
 search_provider          : # lunr (default), algolia, google
 algolia:
@@ -283,4 +283,3 @@ defaults:
       comments: true # true 로 수정
       share: true
       related: true
-search : true
