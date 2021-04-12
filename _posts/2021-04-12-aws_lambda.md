@@ -5,7 +5,7 @@ category :
 tag :
     - pandas data structure
 toc : true
-published : false
+published : true
 ---
 
-tesing pages
+tesing 
