@@ -3,7 +3,7 @@ title : "AWS Elastic Beanstalk"
 category :
     - AWS
 tag :
-    - AWS Elastic Beanstalk
+    - Elastic Beanstalk
 toc : true
 published : true
 ---
