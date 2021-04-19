@@ -21,3 +21,5 @@ published : true
 ![hosting](/image/lecture/whole_logic.png)
 
 ## 실습환경 준비
+[WSL To Windows Operation System](https://www.44bits.io/ko/post/wsl2-install-and-basic-usage)
+     - Windowds 에서 Ubuntu Linux 설치에 관해 아주 자세히 나와 있음.
