@@ -12,7 +12,7 @@ published : true
 - docker alias 환경 설정
 - dkr ='docker' , dkrp='docker-compose'
 ![alias](/image/lecture/02/alias.png)
-### 
+
 ```
 dkr run -it amazonlinux bash # amazonlinux bash 환경 접속
 yum update -y # python3 설치 위한 yum update
