@@ -18,8 +18,8 @@ published : true
 - 고객 연락처 정보 추가 -> 특정 고객을 대상으로 하는 세그먼트 만들기
 - 메시지 생성 및 캠페인 예약
 - 캠페인 보내는 이후 캠페인의 수행 성과 확인 가능
----
 
+---
 ### Pinpoint 콘솔
 - Importing customer data from a file.
 - Creating a segment that targets specific users based on their attributes.
