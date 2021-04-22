@@ -16,13 +16,19 @@ published : true
 ```
 dkr run -it amazonlinux bash # amazonlinux bash 환경 접속
 yum update -y # python3 설치 위한 yum update
-yum install python3 -y
+yum install python3 -y 
 
 # virtualenv 설치
-pip install virtualenv
+pip3 install virtualenv
 
 # which install
 yum install which
 
+mkdir venv && cd venv
+virtualenv -p /usr/bin/python3 py37
+
+source py37/bin/activate # 가상환경 진입
+
+deactivate # 가상환경에서 나오기
 ```
 
