@@ -1,5 +1,5 @@
 ---
-title : "AWS 서버리스 프로젝트"
+title : "AWS serverless 실습환경"
 category :
     - AWS
     - Server less
