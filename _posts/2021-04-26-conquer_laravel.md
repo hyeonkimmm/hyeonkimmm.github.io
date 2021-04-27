@@ -45,16 +45,123 @@ You may define all of your scheduled tasks in the `schedule` method of the `App\
 `Closure`안에 있는 table을 비우기 위해 database query를 실행할 것 입니다.
 
 ```php
-<?php  namespace App\Console;  use 
-Illuminate\Console\Scheduling\Schedule; use 
-Illuminate\Foundation\Console\Kernel as ConsoleKernel; use 
-Illuminate\Support\Facades\DB;  
-class Kernel extends ConsoleKernel {
-    /**      
-    * The Artisan commands provided by your application.      *
-          * @var array      */     
-          protected $commands = [         //     ];      
-          /**      
-          * Define the application's command schedule.      *      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule      * @return void      */     
-          protected function schedule(Schedule $schedule)     {         $schedule->call(function () {             DB::table('recent_users')->delete();         })->daily();     } }
+<?php
+
+namespace App\Console;
+
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
+
+class Kernel extends ConsoleKernel
+{
+    /**
+     * The Artisan commands provided by your application.
+     *
+     * @var array
+     */
+    protected $commands = [
+        //
+    ];
+
+    /**
+     * Define the application's command schedule.
+     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->call(function () {
+            DB::table('recent_users')->delete();
+        })->daily();
+    }
+}
 ```
+In addition to scheduling using Closures, you may also use invokable objects. Invokable objects are simple PHP classes that contain an `__invoke method:`
+호출 불가능한 객체도 `__invoke` method에서 불러올 수 있음.
+```php
+$schedule->call(new DeleteRecentUsers)->daily();
+```
+#### Scheduling Artisan Commands
+In addition to scheduling Closure calls, you may also schedule [Artisan commands](https://laravel.com/docs/6.x/artisan) and operating system commands. For example, you may use the `command` method to schedule an Artisan command using either the command's name or class:
+
+closure 스케줄링을 호출하는 것 외에도 artisan commands과 운영체제 명령을 실행하는 스케줄링도 가능하다. 예를들어 command method에 아래와 같이 작성한다.
+```php
+$schedule->command('emails:send Taylor --force')->daily();
+
+$schedule->command(EmailsCommand::class, ['Taylor', '--force'])->daily();
+```
+#### Scheduling Queued Jobs
+The `job` method may be used to schedule a queued job. This method provides a convenient way to schedule jobs without using the call method to manually create Closures to queue the job:
+```php
+$schedule->job(new Heartbeat)->everyFiveMinutes();
+
+// Dispatch the job to the "heartbeats" queue...
+$schedule->job(new Heartbeat, 'heartbeats')->everyFiveMinutes();
+```
+job method를 활용해서 예약된 job을 실행 할 수 있다. call method를 실행하지 않고도 가능
+
+#### Scheduling Shell Commands
+The `exec` method may be used to issue a command to the operating system:
+```php
+$schedule->exec('node /home/forge/script.js')->daily();
+```
+
+#### Schedule Frequency Options
+There are a variety of schedules you may assign to your task:
+
+These methods may be combined with additional constraints to create even more finely tuned schedules that only run on certain days of the week. For example, to schedule a command to run weekly on Monday:
+```php
+// Run once per week on Monday at 1 PM...
+$schedule->call(function () {
+    //
+})->weekly()->mondays()->at('13:00');
+
+// Run hourly from 8 AM to 5 PM on weekdays...
+$schedule->command('foo')
+          ->weekdays()
+          ->hourly()
+          ->timezone('America/Chicago')
+          ->between('8:00', '17:00');
+```
+**Between Time Constraints**
+The `between` method may be used to limit the execution of a task based on the time of day:
+```php
+$schedule->command('reminders:send')
+                    ->hourly()
+                    ->between('7:00', '22:00');
+```
+Similarly, the `unlessBetween` method can be used to exclude the execution of a task for a period of time:
+```php
+$schedule->command('reminders:send')
+                    ->hourly()
+                    ->unlessBetween('23:00', '4:00');
+```
+unlessBetween을 통해 이시간동안 task를 실행하지 않게 진행할 수 있음.
+
+**Truth Test Constraints**
+The `when` method may be used to limit the execution of a task based on the result of a given truth test. In other words, if the given `Closure` returns `true`, the task will execute as long as no other constraining conditions prevent the task from running:
+
+```php
+$schedule->command('emails:send')->daily()->when(function () {
+    return true;
+});
+```
+When using chained `when` methods, the scheduled command will only execute if all `when` conditions return `true`.
+
+**Environment Constraints**
+The `environments` method may be used to execute tasks only on the given environments:
+```php
+$schedule->command('emails:send')
+            ->daily()
+            ->environments(['staging', 'production']);
+```
+### Timezones
+Using the `timezone` method, you may specify that a scheduled task's time should be interpreted within a given timezone:
+```php
+$schedule->command('report:generate')
+         ->timezone('America/New_York')
+         ->at('02:00')
+```
+timezone method를 활용하면 지역별 시간대에 맞게 특정하여 scheduled할 수 있음
