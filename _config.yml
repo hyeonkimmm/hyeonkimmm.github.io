@@ -283,3 +283,4 @@ defaults:
       comments: true # true 로 수정
       share: true
       related: true
+      sidebar_main: true
