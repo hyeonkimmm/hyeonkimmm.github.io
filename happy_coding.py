@@ -1,37 +1,41 @@
-def cal_dividend(seller,amount,member_dict={}):
-    dividend = int(amount*0.1)
-    # 배당금 10% 1미만
-    if dividend < 1 :
-        member_dict[seller][1] += amount # 그대로 순이익
-    # 배당금 10% 1이상 and 추천인 X
-    elif member_dict[seller][0] =='-':
-        member_dict[seller][1] += amount - dividend
-    # 배당금 10% 1이상 and 추천인 O
-    else:
-        member_dict[seller][1] += amount - dividend
-        cal_dividend(member_dict[seller][0],dividend,member_dict)
-
-def solution(enroll, referral, seller, amount):
-    member_dict = {}
-    for en,re in zip(enroll,referral):
-        member_dict[en]=[re,0]
-    amount = list(map(lambda x:x*100,amount))
-    for sellery,count in zip(seller,amount):
-        cal_dividend(sellery, count,member_dict)
+from collections import defaultdict
+from itertools import combinations
+def solution(orders, course):
+    order_dict ={}
     answer = []
-    for member in enroll:
-        answer.append(member_dict[member][1])
-    return answer
+    for c in course:
+        order_dict[c]= defaultdict(int)
 
-enroll = ["john", "mary", "edward", "sam", "emily", "jaimie", "tod", "young"]
-referral = ["-", "-", "mary", "edward", "mary", "mary", "jaimie", "edward"]
+    for order in orders:
+        for combine in course:
+            for combination_order in list(combinations(sorted(order),combine)):
+                order_dict[combine][''.join(combination_order)]+=1 
 
-# seller = ["young", "john", "tod", "emily", "mary"]
-# amount = [12, 4, 2, 5, 10]
-# result = [360, 958, 108, 0, 450, 18, 180, 1080]
+    for combine in course:
+        try:
+            top_order = max(order_dict[combine].values())
+        except :
+            continue
+        if top_order >=2:
+            for key,value in order_dict[combine].items():
+                if value == top_order:
+                    answer.append(key)
+    return sorted(answer)
+'''
+최소 2가지 이상의 메뉴로 단품메뉴 구성
+최소 2명 이상의 손님으로부터 주문된 단품메뉴 조합
+for 문 중첩 두번에
+course에 맞게 조합해주는 dict 선언해서 하나씩 늘리면 될듯
+'''
+orders= ["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"]
+course= [2,3,4]
+print(solution(orders,course))
 
-seller = ["sam", "emily", "jaimie", "edward"]
-amount = [2, 3, 5, 4]
-result = [0, 110, 378, 180, 270, 450, 0, 0]
+orders= ["ABCDE", "AB", "CD", "ADE", "XYZ", "XYZ", "ACD"]
+course= [2,3,5]
+print(solution(orders,course))
 
-print(solution(enroll,referral,seller,amount))
+orders= ["XYZ", "XWY", "WXA"]
+course= [2,3,4]
+print(solution(orders,course))
+
